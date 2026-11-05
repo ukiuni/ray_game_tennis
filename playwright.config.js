@@ -6,6 +6,8 @@ export default defineConfig({
   testDir: 'tests/e2e',
   timeout: 60_000,
   retries: process.env.CI ? 1 : 0,
+  // CI has no GPU (software WebGL): run pages one at a time so timing-based tests aren't starved
+  workers: process.env.CI ? 1 : undefined,
   use: {
     baseURL: 'http://localhost:4173/',
     trace: 'retain-on-failure',

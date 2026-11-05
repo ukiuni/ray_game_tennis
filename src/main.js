@@ -18,7 +18,7 @@ const app = {
   stage: 1,
   streak: 0,
   best: Number(localStorage.getItem(BEST_KEY) || 0),
-  countdown: 0,
+  countdownEnd: 0,
   msgTimer: 0,
   toastTimer: 0,
 };
@@ -117,7 +117,8 @@ function onMatchEnd(winner) {
     sfx.win();
     $('win-streak').textContent = app.streak;
     $('next-stage').textContent = app.stage + 1;
-    app.countdown = NEXT_GAME_DELAY;
+    // wall-clock deadline so slow frame rates don't stretch the countdown
+    app.countdownEnd = performance.now() + NEXT_GAME_DELAY * 1000;
     $('countdown').textContent = NEXT_GAME_DELAY;
     setState('between');
   } else {
@@ -270,10 +271,9 @@ function frame(now) {
   }
 
   if (app.state === 'between') {
-    app.countdown -= dt;
-    const n = Math.max(0, Math.ceil(app.countdown));
-    setText('countdown', n);
-    if (app.countdown <= 0) {
+    const remaining = (app.countdownEnd - now) / 1000;
+    setText('countdown', Math.max(0, Math.ceil(remaining)));
+    if (remaining <= 0) {
       app.stage++;
       startStage();
     }

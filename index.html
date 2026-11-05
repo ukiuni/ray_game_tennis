@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#0e2a1c" />
+    <meta name="description" content="CPUと対戦する3Dテニスゲーム" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ドットテニス" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <title>ドットテニス 3D</title>
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+
+    <div id="ui">
+      <!-- HUD -->
+      <div id="hud" class="hidden">
+        <div class="board">
+          <div class="row"><span class="name you">あなた</span><span id="sc-player" class="pts">0</span><span id="srv-player" class="srv">●</span></div>
+          <div class="row"><span class="name cpu">CPU</span><span id="sc-cpu" class="pts">0</span><span id="srv-cpu" class="srv">●</span></div>
+        </div>
+        <div class="stage"><span id="hud-stage">STAGE 1</span><span id="hud-streak">連勝 0</span></div>
+      </div>
+      <div id="call" class="hidden"></div>
+      <div id="message" class="hidden"></div>
+      <div id="serve-hint" class="hidden">ボタンでサーブ (長押しで強サーブ)</div>
+
+      <!-- Touch controls -->
+      <div id="controls" class="hidden">
+        <div id="zone-left" class="zone" data-testid="zone-left">
+          <div id="joy-base"><div id="joy-knob"></div></div>
+          <div class="zone-label">移動 / 打つ方向</div>
+        </div>
+        <div id="zone-right" class="zone" data-testid="zone-right">
+          <div id="swing-btn">
+            <div id="swing-charge"></div>
+            <span class="swing-label">SWING</span>
+            <span class="swing-sub">短押し:弱 / 長押し:強</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title -->
+      <div id="title" class="screen">
+        <div class="panel">
+          <h1 class="logo">ドットテニス<span>3D</span></h1>
+          <p class="tag">CPUに勝ち続けろ! 勝つほど相手が強くなる</p>
+          <button id="btn-start" class="btn big">スタート</button>
+          <p class="best">ベスト連勝: <b id="best">0</b></p>
+          <details class="howto">
+            <summary>あそびかた</summary>
+            <ul>
+              <li>画面<b>左</b>をドラッグ: ジョイスティックで移動</li>
+              <li>画面<b>右</b>のボタン: ラケットを振る</li>
+              <li><b>短く押す</b> → 弱振: ゆっくり短いボール</li>
+              <li><b>長押し</b>して離す → 強振: 速く深いボール</li>
+              <li>当たった瞬間の<b>ジョイスティックの向き</b>へ打ち返す</li>
+              <li>黄色いリングはボールの落下予測地点</li>
+              <li>1ゲーム先取で勝利。勝つと自動で次のゲームへ!</li>
+            </ul>
+          </details>
+          <button id="btn-sound" class="btn small">サウンド: ON</button>
+          <p class="ver">v<span id="ver"></span></p>
+          <p id="rotate-hint">📱 横向きがおすすめです</p>
+        </div>
+      </div>
+
+      <!-- Between games (win) -->
+      <div id="win" class="screen hidden">
+        <div class="panel">
+          <h2 class="win-title">勝利!</h2>
+          <p>連勝 <b id="win-streak">1</b></p>
+          <p class="next">次のゲーム (STAGE <span id="next-stage">2</span>) まで <b id="countdown">3</b></p>
+          <button id="btn-quit" class="btn small">タイトルへ</button>
+        </div>
+      </div>
+
+      <!-- Game over -->
+      <div id="over" class="screen hidden">
+        <div class="panel">
+          <h2 class="lose-title">ゲームオーバー</h2>
+          <p>連勝記録: <b id="over-streak">0</b></p>
+          <p class="best">ベスト連勝: <b id="over-best">0</b></p>
+          <p id="new-record" class="hidden">🎉 新記録!</p>
+          <button id="btn-retry" class="btn big">もう一度</button>
+          <button id="btn-title" class="btn small">タイトルへ</button>
+        </div>
+      </div>
+
+      <div id="toast" class="hidden"></div>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
